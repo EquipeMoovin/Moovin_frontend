@@ -10,7 +10,7 @@ class AuthService {
   Future<AuthResponse> login(String email, String password) async {
     try {
       final response = await _dio.post(
-        '/auth/login/',  // Ajuste o endpoint do seu Django (ex: com / no final)
+        '/api/users/token',  
         data: {'email': email, 'password': password},
       );
       // Assume que response.data é o User JSON

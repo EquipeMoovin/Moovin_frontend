@@ -4,6 +4,7 @@ import 'network/api_client.dart';
 import '../features/auth/data/services/auth_service.dart';
 import '../features/auth/data/repositories/auth_repository.dart';
 import '../features/auth/domain/usecases/login_usecase.dart';
+import '../features/auth/presentation/bloc/auth_bloc.dart';  // Novo import
 
 final sl = GetIt.instance;
 
@@ -11,12 +12,18 @@ Future<void> setup() async {
   // Core
   sl.registerSingleton<Dio>(ApiClient.create());
 
-  // Data layer
+  // Data layer - Auth
   sl.registerLazySingleton<AuthService>(() => AuthService(sl<Dio>()));
 
-  // Repository
+  // Repository - Auth
   sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(sl<AuthService>()));
 
-  // Domain
+  // Domain - UseCase
   sl.registerLazySingleton<LoginUseCase>(() => LoginUseCase(sl<AuthRepository>()));
+
+  // Presentation - BLoC (Novo: registre como factory para injeção)
+  sl.registerFactory<AuthBloc>(() => AuthBloc(
+    loginUseCase: sl<LoginUseCase>(),
+    repository: sl<AuthRepository>(),  // Se usar o parâmetro opcional
+  ));
 }

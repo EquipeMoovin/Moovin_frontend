@@ -7,7 +7,8 @@ class AuthResponse {
   final String email;
   final String name;
   final String username;
-  final String userType;  // 'Proprietario', 'Inquilino', 'Admin'
+  final String userType;
+  final String? token;  
   final DateTime created;
   final bool isActive;
   final bool isStaff;
@@ -18,6 +19,7 @@ class AuthResponse {
     required this.name,
     required this.username,
     required this.userType,
+    this.token,
     required this.created,
     required this.isActive,
     required this.isStaff,

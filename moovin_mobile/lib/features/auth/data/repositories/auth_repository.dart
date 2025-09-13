@@ -1,10 +1,14 @@
+import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/models/user.dart';
 import '../../../../core/error/api_exception.dart';
 import '../services/auth_service.dart';
+import '../models/auth_response.dart';
 
 abstract class AuthRepository {
   Future<User> login(String email, String password);
+  Future<User?> getCurrentUser();
+  Future<void> logout();
 }
 
 class AuthRepositoryImpl implements AuthRepository {
@@ -16,7 +20,6 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<User> login(String email, String password) async {
     try {
       final response = await _service.login(email, password);
-      // Converte model para entity (User)
       final user = User(
         id: response.id,
         email: response.email,
@@ -32,14 +35,32 @@ class AuthRepositoryImpl implements AuthRepository {
         isActive: response.isActive,
         isStaff: response.isStaff,
       );
-      // Cache do user (salve como JSON para persistência)
+
+      // Salva user e token no SharedPreferences
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('user', user.toJson().toString());
+      await prefs.setString('user_json', jsonEncode(user.toJson()));
+      await prefs.setString('access_token', response.token ?? '');  // Assuma que API retorna 'token'
+
       return user;
     } on ApiException {
       rethrow;
     } catch (e) {
       throw ApiException('Erro no repositório: $e');
     }
+  }
+
+  @override
+  Future<User?> getCurrentUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userJson = prefs.getString('user_json');
+    if (userJson == null) return null;
+    final map = jsonDecode(userJson) as Map<String, dynamic>;
+    return User.fromJson(map);
+  }
+
+  @override
+  Future<void> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
   }
 }
