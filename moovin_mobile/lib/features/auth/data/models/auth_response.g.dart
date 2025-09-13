@@ -26,7 +26,7 @@ Map<String, dynamic> _$AuthResponseToJson(AuthResponse instance) =>
       'username': instance.username,
       'userType': instance.userType,
       'token': instance.token,
-      'created': instance.created.toIso8601String(),
+      'created': instance.created,
       'isActive': instance.isActive,
       'isStaff': instance.isStaff,
     };

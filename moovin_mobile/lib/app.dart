@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   MyApp({super.key});
 
   // Configuração simples do GoRouter: login como inicial, dashboard como pós-auth
-  late final _router = GoRouter(
+  static final router = GoRouter(
     initialLocation: '/login',
     routes: [
       GoRoute(
@@ -27,28 +27,13 @@ class MyApp extends StatelessWidget {
         builder: (context, state) => const PlaceholderScreen(title: 'Dashboard - Bem-vindo!'),
       ),
     ],
-    // Redirect simples: se autenticado, vai para dashboard; senão, fica no login
-    redirect: (context, state) {
-      final authBloc = context.read<AuthBloc>();
-      final authState = authBloc.state;
-
-      // Se tentando acessar dashboard sem auth, redireciona para login
-      if (state.uri.toString() == '/dashboard' && authState is! AuthAuthenticated) {
-        return '/login';
-      }
-      // Se autenticado e no login, vai para dashboard (sem role ainda)
-      if (state.uri.toString() == '/login' && authState is AuthAuthenticated) {
-        return '/dashboard';
-      }
-      return null;  // Sem redirecionamento
-    },
   );
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'Meu App Auth - Apenas Login',
-      routerConfig: _router,
+      routerConfig: router,
       debugShowCheckedModeBanner: false,
     );
   }

@@ -22,24 +22,24 @@ class AuthRepositoryImpl implements AuthRepository {
       final response = await _service.login(email, password);
       final user = User(
         id: response.id,
-        email: response.email,
-        name: response.name,
-        username: response.username,
-        userType: response.userType,
+        email: response.email ?? '',  
+        name: response.name ?? '',
+        username: response.username ?? '',
+        userType: response.userType ?? 'Admin',
         role: response.userType == 'Proprietario' 
             ? Role.proprietario 
             : response.userType == 'Inquilino' 
                 ? Role.inquilino 
                 : Role.admin,
         created: response.created,
-        isActive: response.isActive,
-        isStaff: response.isStaff,
+        isActive: response.isActive ?? true,
+        isStaff: response.isStaff ?? false,
       );
 
-      // Salva user e token no SharedPreferences
+      // Cache...
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('user_json', jsonEncode(user.toJson()));
-      await prefs.setString('access_token', response.token ?? '');  // Assuma que API retorna 'token'
+      await prefs.setString('access_token', response.token ?? '');
 
       return user;
     } on ApiException {

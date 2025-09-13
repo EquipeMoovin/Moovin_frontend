@@ -14,11 +14,15 @@ class AuthService {
         data: {'email': email, 'password': password},
       );
       // Assume que response.data é o User JSON
+      print('Resposta da API (JSON): ${response.data}');
       return AuthResponse.fromJson(response.data);
     } on DioException catch (e) {
+
+      print('Erro Dio: ${e.response?.data}');
       final message = e.response?.data['message'] ?? e.message ?? 'Falha no login';
       throw ApiException(message, code: e.response?.statusCode.toString());
     } catch (e) {
+      print('Erro geral: $e');
       throw ApiException('Erro inesperado: $e');
     }
   }

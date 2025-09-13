@@ -14,6 +14,7 @@ class ApiClient {
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
+          print('Requisição: ${options.method} ${options.uri}');
           // Adiciona token de auth se disponível
           final prefs = await SharedPreferences.getInstance();
           final token = prefs.getString('access_token');
