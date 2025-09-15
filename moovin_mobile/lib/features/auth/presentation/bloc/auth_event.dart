@@ -17,4 +17,13 @@ class LoginSubmitted extends AuthEvent {
   List<Object> get props => [email, password];
 }
 
+class RegisterSubmitted extends AuthEvent {
+  final Map<String, dynamic> userData;
+
+  const RegisterSubmitted(this.userData);
+
+  @override
+  List<Object> get props => [userData];
+}
+
 class CheckAuthStatus extends AuthEvent {}  

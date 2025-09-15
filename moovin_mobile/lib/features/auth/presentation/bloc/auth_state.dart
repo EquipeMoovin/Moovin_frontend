@@ -30,4 +30,20 @@ class AuthError extends AuthState {
   List<Object> get props => [message];
 }
 
+class RegisterSuccess extends AuthState { 
+  final String message;
+  const RegisterSuccess(this.message);
+
+  @override
+  List<Object> get props => [message];
+}
+
+class RegisterError extends AuthState { 
+  final String message;
+  const RegisterError(this.message);
+
+  @override
+  List<Object> get props => [message];
+}
+
 class AuthUnauthenticated extends AuthState {}  
