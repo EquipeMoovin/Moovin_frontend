@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'core/injection.dart';
+
 import 'features/auth/presentation/screens/login_screen.dart';
-import 'features/auth/presentation/screens/placeholder_screen.dart';  // Placeholder para pós-login
+import 'features/auth/presentation/screens/placeholder_screen.dart'; 
+import 'features/auth/presentation/screens/register_screen.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
-import 'features/auth/presentation/bloc/auth_state.dart';
-import 'core/util/role_manager.dart';  // Mantenha para navegação futura
 
 class MyApp extends StatelessWidget {
   MyApp({super.key});
 
-  // Configuração simples do GoRouter: login como inicial, dashboard como pós-auth
   static final router = GoRouter(
     initialLocation: '/login',
     routes: [
@@ -23,18 +22,35 @@ class MyApp extends StatelessWidget {
         ),
       ),
       GoRoute(
+        path: '/register',
+        builder: (context, state) => BlocProvider<AuthBloc>(
+          create: (_) => sl<AuthBloc>(),
+          child: const RegisterScreen(),
+        ),
+      ),
+      GoRoute(
         path: '/dashboard',
-        builder: (context, state) => const PlaceholderScreen(title: 'Dashboard - Bem-vindo!'),
+        builder: (context, state) => const PlaceholderScreen(
+          title: 'Dashboard',
+        ),
       ),
     ],
+    redirect: (context, state) {
+      // Adicione lógica de redirecionamento se necessário
+      return null;
+    },
   );
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Meu App Auth - Apenas Login',
+      title: 'Moovin Mobile',
       routerConfig: router,
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.green,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
     );
   }
 }

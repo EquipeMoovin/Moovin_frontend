@@ -17,18 +17,3 @@ void main() async {
 
   runApp(MyApp());
 }
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Moovin Mobile',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-      ),
-      home: const LoginScreen(), // Mudar para sua tela de login
-    );
-  }
-}
