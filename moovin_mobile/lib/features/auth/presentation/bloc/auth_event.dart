@@ -28,14 +28,12 @@ class RegisterSubmitted extends AuthEvent {
 
 class VerifyEmailSubmitted extends AuthEvent {
   final String code;
-  final String email;
 
-  const VerifyEmailSubmitted(this.code, {required this.email});
+  const VerifyEmailSubmitted(this.code);
 
   @override
-  List<Object> get props => [code, email];
+  List<Object> get props => [code];
 }
-
 class ResendVerificationCode extends AuthEvent {
   final String email;
 
@@ -44,5 +42,6 @@ class ResendVerificationCode extends AuthEvent {
   @override
   List<Object> get props => [email];
 }
+
 
 class CheckAuthStatus extends AuthEvent {}

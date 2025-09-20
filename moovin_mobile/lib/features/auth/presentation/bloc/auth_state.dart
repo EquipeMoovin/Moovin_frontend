@@ -20,6 +20,14 @@ class AuthAuthenticated extends AuthState {
   @override
   List<Object> get props => [user];
 }
+class AuthSuccess extends AuthState {
+  final String message;
+
+  const AuthSuccess(this.message);
+
+  @override
+  List<Object> get props => [message];
+}
 
 class AuthError extends AuthState {
   final String message;
@@ -46,6 +54,7 @@ class RegisterError extends AuthState {
   List<Object> get props => [message];
 }
 
+// Estados para verificação de e-mail
 class Verifying extends AuthState {
   @override
   List<Object> get props => [];

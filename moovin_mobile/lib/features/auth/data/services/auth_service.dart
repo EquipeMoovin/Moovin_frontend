@@ -81,28 +81,39 @@ class AuthService {
     }
   }
   
-  //Terminar implementação nas outras camadas...
-  Future<Map<String, dynamic>> requestEmailVerification(String email) async {
+  Future<void> verifyEmail(String code) async {
     try {
       final response = await _dio.post(
-        'api/users/request-email-verification/',
-        data: {'email': email}, 
-        options: Options(headers: {'Content-Type': 'application/json'}),
+        'api/users/verify-email-code/',
+        data: {
+          'code': code,
+        },
       );
-
-      if (response.statusCode == 200) {
-        return Map<String, dynamic>.from(response.data);
-      } else {
-        throw Exception(
-          'Falha ao solicitar verificação de e-mail: ${response.statusCode} - ${response.data}',
-        );
-      }
+      print('Verificação bem-sucedida: ${response.data}');
     } on DioException catch (e) {
-      throw Exception(
-        'Erro Dio na verificação de e-mail: ${e.response?.statusCode} - ${e.response?.data}',
-      );
+      print('Erro na verificação: ${e.response?.data}');
+      final message = e.response?.data['message'] ?? e.message ?? 'Falha na verificação';
+      throw ApiException(message, code: e.response?.statusCode.toString());
     } catch (e) {
-      throw Exception('Erro inesperado na verificação de e-mail: $e');
+      print('Erro geral na verificação: $e');
+      throw ApiException('Erro inesperado: $e');
+    }
+  }
+
+  Future<void> resendVerificationCode(String email) async {
+    try {
+      final response = await _dio.post(
+        '/api/auth/resend-code', // Ajuste o endpoint conforme necessário
+        data: {'email': email},
+      );
+      print('Código reenviado: ${response.data}');
+    } on DioException catch (e) {
+      print('Erro ao reenviar: ${e.response?.data}');
+      final message = e.response?.data['message'] ?? e.message ?? 'Falha ao reenviar código';
+      throw ApiException(message, code: e.response?.statusCode.toString());
+    } catch (e) {
+      print('Erro geral ao reenviar: $e');
+      throw ApiException('Erro inesperado: $e');
     }
   }
 }

@@ -9,7 +9,8 @@ abstract class AuthRepository {
   Future<void> registerUser(Map<String, dynamic> userData);
   Future<User?> getCurrentUser();
   Future<void> logout();
-  Future<void> requestEmailVerification(String email);
+  Future<void> verifyEmail(String code);
+  Future<void> resendVerificationCode(String email);
 }
 
 class AuthRepositoryImpl implements AuthRepository {
@@ -27,18 +28,6 @@ class AuthRepositoryImpl implements AuthRepository {
       rethrow;
     } catch (e) {
       throw ApiException('Erro no registro: $e');
-    }
-  }
-  @override
-  Future<void> requestEmailVerification(String email) async {
-    try {
-      final response = await _service.requestEmailVerification(email);
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('verification_message', response['message'] ?? 'Verificação enviada!');
-    } on ApiException {
-      rethrow;
-    } catch (e) {
-      throw ApiException('Erro ao solicitar verificação de e-mail: $e');
     }
   }
 
@@ -74,7 +63,30 @@ class AuthRepositoryImpl implements AuthRepository {
       throw ApiException('Erro no repositório: $e');
     }
   }
+ 
 
+  @override
+  Future<void> verifyEmail(String code) async {
+    try {
+      await _service.verifyEmail(code);
+    } on ApiException {
+      rethrow;
+    } catch (e) {
+      throw ApiException('Erro na verificação: $e');
+    }
+  }
+
+  @override
+  Future<void> resendVerificationCode(String email) async {
+    try {
+      await _service.resendVerificationCode(email);
+    } on ApiException {
+      rethrow;
+    } catch (e) {
+      throw ApiException('Erro ao reenviar código: $e');
+    }
+  }
+ 
   @override
   Future<User?> getCurrentUser() async {
     final prefs = await SharedPreferences.getInstance();

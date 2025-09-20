@@ -17,6 +17,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<CheckAuthStatus>(_onCheckAuthStatus);
     on<LoginSubmitted>(_onLoginSubmitted);
     on<RegisterSubmitted>(_onRegisterSubmitted);
+    on<ResendVerificationCode>(_onResendVerificationCode);
+    on<VerifyEmailSubmitted>(_onVerifyEmailSubmitted);
   }
 
   Future<void> _onCheckAuthStatus(
@@ -61,4 +63,26 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(RegisterError(e.toString()));
     }
   }
+
+  Future<void> _onVerifyEmailSubmitted(VerifyEmailSubmitted event, Emitter<AuthState> emit) async {
+    emit(Verifying());
+    try {
+      await _repository.verifyEmail(event.code);
+      emit(const EmailVerified('Email verificado com sucesso!'));
+    } catch (e) {
+      print('Erro na verificação: $e');
+      emit(EmailVerificationError(e.toString()));
+    }
+  }
+  Future<void> _onResendVerificationCode(ResendVerificationCode event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
+    try {
+      await _repository.resendVerificationCode(event.email);
+      emit(const AuthSuccess('Código reenviado com sucesso!'));
+    } catch (e) {
+      print('Erro ao reenviar código: $e');
+      emit(AuthError(e.toString()));
+    }
+  }
+
 }
