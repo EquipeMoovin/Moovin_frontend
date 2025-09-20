@@ -56,6 +56,7 @@ class RegisterError extends AuthState {
 
 // Estados para verificação de e-mail
 class Verifying extends AuthState {
+  const Verifying();
   @override
   List<Object> get props => [];
 }

@@ -9,7 +9,8 @@ abstract class AuthRepository {
   Future<void> registerUser(Map<String, dynamic> userData);
   Future<User?> getCurrentUser();
   Future<void> logout();
-  Future<void> verifyEmail(String code);
+  Future<void> verifyEmail(String code,String email);
+  Future<void> requestEmailVerification(String email);
   Future<void> resendVerificationCode(String email);
 }
 
@@ -66,13 +67,26 @@ class AuthRepositoryImpl implements AuthRepository {
  
 
   @override
-  Future<void> verifyEmail(String code) async {
+  Future<void> verifyEmail(String code,String email) async {
     try {
-      await _service.verifyEmail(code);
+      await _service.verifyEmail(code,email);
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('email_verified', true);
     } on ApiException {
       rethrow;
     } catch (e) {
       throw ApiException('Erro na verificação: $e');
+    }
+  }
+
+  @override
+  Future<void> requestEmailVerification(String email) async {
+    try {
+      await _service.requestEmailVerification(email);
+    } on ApiException {
+      rethrow;
+    } catch (e) {
+      throw ApiException('Erro ao solicitar código de verificação: $e');
     }
   }
 

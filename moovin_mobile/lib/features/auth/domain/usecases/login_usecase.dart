@@ -16,4 +16,5 @@ class LoginUseCase {
     }
     return repository.login(email, password);
   }
+  
 }

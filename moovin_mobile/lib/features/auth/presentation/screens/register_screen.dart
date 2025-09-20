@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
-import '/../../app.dart';  
+import '/../../app.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -27,17 +27,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is RegisterSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
-            );
-            
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.message)));
             Future.delayed(const Duration(seconds: 2), () {
-              MyApp.router.go('/verify');
+              final email = _emailController.text.trim();
+              // ignore: use_build_context_synchronously
+              MyApp.router.go('/verify/$email');
+              context.read<AuthBloc>().add(RequestEmailVerification(email));
             });
           } else if (state is RegisterError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.message)));
           }
         },
         child: BlocBuilder<AuthBloc, AuthState>(
@@ -55,42 +57,64 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     TextFormField(
                       controller: _emailController,
                       decoration: const InputDecoration(labelText: 'Email'),
-                      validator: (value) => (value?.isEmpty ?? true) || !value!.contains('@') ? 'Email inválido' : null,
+                      validator: (value) =>
+                          (value?.isEmpty ?? true) || !value!.contains('@')
+                          ? 'Email inválido'
+                          : null,
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _nameController,
-                      decoration: const InputDecoration(labelText: 'Nome Completo'),
-                      validator: (value) => (value?.isEmpty ?? true) ? 'Nome obrigatório' : null,
+                      decoration: const InputDecoration(
+                        labelText: 'Nome Completo',
+                      ),
+                      validator: (value) =>
+                          (value?.isEmpty ?? true) ? 'Nome obrigatório' : null,
                     ),
                     const SizedBox(height: 16),
                     DropdownButtonFormField<String>(
                       initialValue: _selectedUserType,
-                      decoration: const InputDecoration(labelText: 'Tipo de Usuário'),
+                      decoration: const InputDecoration(
+                        labelText: 'Tipo de Usuário',
+                      ),
                       items: const [
-                        DropdownMenuItem(value: 'inquilino', child: Text('Inquilino')),
-                        DropdownMenuItem(value: 'proprietario', child: Text('Proprietário')),
+                        DropdownMenuItem(
+                          value: 'inquilino',
+                          child: Text('Inquilino'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'proprietario',
+                          child: Text('Proprietário'),
+                        ),
                       ],
                       onChanged: (value) {
                         setState(() {
                           _selectedUserType = value!;
                         });
                       },
-                      validator: (value) => value == null ? 'Selecione um tipo' : null,
+                      validator: (value) =>
+                          value == null ? 'Selecione um tipo' : null,
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _passwordController,
                       obscureText: true,
                       decoration: const InputDecoration(labelText: 'Senha'),
-                      validator: (value) => (value?.isEmpty ?? true) || (value!.length < 6) ? 'Senha mínima 6 caracteres' : null,
+                      validator: (value) =>
+                          (value?.isEmpty ?? true) || (value!.length < 6)
+                          ? 'Senha mínima 6 caracteres'
+                          : null,
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _confirmPasswordController,
                       obscureText: true,
-                      decoration: const InputDecoration(labelText: 'Confirmar Senha'),
-                      validator: (value) => (value != _passwordController.text) ? 'Senhas não conferem' : null,
+                      decoration: const InputDecoration(
+                        labelText: 'Confirmar Senha',
+                      ),
+                      validator: (value) => (value != _passwordController.text)
+                          ? 'Senhas não conferem'
+                          : null,
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton(
@@ -102,10 +126,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             'password': _passwordController.text,
                             'user_type': _selectedUserType,
                           };
-                          
+
                           context.read<AuthBloc>().add(
-                                RegisterSubmitted(userData),
-                              );
+                            RegisterSubmitted(userData),
+                          );
                         }
                       },
                       child: const Text('Registrar'),
@@ -123,6 +147,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
     );
   }
+
   @override
   void dispose() {
     _emailController.dispose();

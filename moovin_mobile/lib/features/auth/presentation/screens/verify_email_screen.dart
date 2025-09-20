@@ -7,7 +7,12 @@ import '../bloc/auth_state.dart';
 import '/../app.dart'; // Para MyApp.router
 
 class VerifyEmailScreen extends StatefulWidget {
-  const VerifyEmailScreen({super.key});
+  final String email; // recebemos do RegisterScreen
+
+  const VerifyEmailScreen({
+    super.key,
+    required this.email,
+  });
 
   @override
   State<VerifyEmailScreen> createState() => _VerifyEmailScreenState();
@@ -33,7 +38,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
         listener: (context, state) {
           if (state is EmailVerified) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Verificação concluída! Redirecionando...')),
+              SnackBar(content: Text(state.message)),
             );
             Future.delayed(const Duration(seconds: 2), () {
               if (context.mounted) {
@@ -41,7 +46,6 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
               }
             });
           } else if (state is EmailVerificationError) {
-            // Erro na verificação, exibe SnackBar
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.message)),
             );
@@ -81,23 +85,27 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                       },
                     ),
                     const SizedBox(height: 20),
-                    state is Verifying
-                        ? const CircularProgressIndicator()
-                        : ElevatedButton(
-                            onPressed: () {
-                              if (_formKey.currentState?.validate() ?? false) {
-                                context.read<AuthBloc>().add(
-                                      VerifyEmailSubmitted(_codeController.text.trim()),
-                                    );
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF6D472F), // Cor do botão
-                              foregroundColor: Colors.white, // Cor do texto
-                              minimumSize: const Size(double.infinity, 50),
-                            ),
-                            child: const Text('Verificar'),
-                          ),
+                    if (state is Verifying)
+                      const CircularProgressIndicator()
+                    else
+                      ElevatedButton(
+                        onPressed: () {
+                          if (_formKey.currentState?.validate() ?? false) {
+                            context.read<AuthBloc>().add(
+                                  VerifyEmailSubmitted(
+                                    widget.email, // usamos o email passado
+                                    _codeController.text.trim(),
+                                  ),
+                                );
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF6D472F),
+                          foregroundColor: Colors.white,
+                          minimumSize: const Size(double.infinity, 50),
+                        ),
+                        child: const Text('Verificar'),
+                      ),
                   ],
                 ),
               ),

@@ -36,10 +36,12 @@ class MyApp extends StatelessWidget {
         ),
       ),
       GoRoute(
-        path: '/verify',
+        path: '/verify/:email',
         builder: (context, state) => BlocProvider<AuthBloc>(
           create: (_) => sl<AuthBloc>(),
-          child: const VerifyEmailScreen(),
+          child: VerifyEmailScreen(
+            email: state.pathParameters['email']!,
+          ),
         ),
       ),
     ],

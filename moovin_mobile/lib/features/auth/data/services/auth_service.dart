@@ -11,7 +11,7 @@ class AuthService {
   Future<AuthResponse> login(String email, String password) async {
     try {
       final response = await _dio.post(
-        '/api/users/token',  
+        '/api/users/token',
         data: {'email': email, 'password': password},
       );
       // Debugging logs
@@ -19,7 +19,8 @@ class AuthService {
       return AuthResponse.fromJson(response.data);
     } on DioException catch (e) {
       print('Erro Dio: ${e.response?.data}');
-      final message = e.response?.data['message'] ?? e.message ?? 'Falha no login';
+      final message =
+          e.response?.data['message'] ?? e.message ?? 'Falha no login';
       throw ApiException(message, code: e.response?.statusCode.toString());
     } catch (e) {
       print('Erro geral: $e');
@@ -27,22 +28,24 @@ class AuthService {
     }
   }
 
-  Future<Map<String, dynamic>> registerUser(Map<String, dynamic> userData) async {
+  Future<Map<String, dynamic>> registerUser(
+    Map<String, dynamic> userData,
+  ) async {
     try {
-      
       final userTypeMap = {
-        'inquilino': 'Inquilino',        
-        'proprietario': 'Proprietario',  
+        'inquilino': 'Inquilino',
+        'proprietario': 'Proprietario',
       };
-      
+
       // Criar cópia dos dados e ajustar o user_type
       final adjustedUserData = Map<String, dynamic>.from(userData);
       final originalUserType = userData['user_type'] as String;
-      adjustedUserData['user_type'] = userTypeMap[originalUserType] ?? originalUserType;
-      
+      adjustedUserData['user_type'] =
+          userTypeMap[originalUserType] ?? originalUserType;
+
       // Debugging logs
       print('📤 Enviando dados: $adjustedUserData');
-      
+
       final response = await _dio.post(
         '/api/users/register',
         data: adjustedUserData,
@@ -64,15 +67,17 @@ class AuthService {
 
         return Map<String, dynamic>.from(data);
       } else {
-        throw ApiException('Status de resposta inesperado: ${response.statusCode}');
+        throw ApiException(
+          'Status de resposta inesperado: ${response.statusCode}',
+        );
       }
-      
     } on DioException catch (e) {
       print(' Erro Dio: ${e.response?.statusCode} - ${e.response?.data}');
-      final message = e.response?.data['error'] ?? 
-                     e.response?.data['message'] ?? 
-                     e.message ?? 
-                     'Falha no registro';
+      final message =
+          e.response?.data['error'] ??
+          e.response?.data['message'] ??
+          e.message ??
+          'Falha no registro';
       throw ApiException(message, code: e.response?.statusCode.toString());
     } catch (e) {
       if (e is ApiException) rethrow;
@@ -80,22 +85,38 @@ class AuthService {
       throw ApiException('Erro inesperado: $e');
     }
   }
-  
-  Future<void> verifyEmail(String code) async {
+
+  Future<void> verifyEmail(String code, String email) async {
     try {
       final response = await _dio.post(
         'api/users/verify-email-code/',
-        data: {
-          'code': code,
-        },
+        data: {'email': email, 'code': code},
       );
       print('Verificação bem-sucedida: ${response.data}');
     } on DioException catch (e) {
       print('Erro na verificação: ${e.response?.data}');
-      final message = e.response?.data['message'] ?? e.message ?? 'Falha na verificação';
+      final message =
+          e.response?.data['message'] ?? e.message ?? 'Falha na verificação';
       throw ApiException(message, code: e.response?.statusCode.toString());
     } catch (e) {
       print('Erro geral na verificação: $e');
+      throw ApiException('Erro inesperado: $e');
+    }
+  }
+
+  Future<void> requestEmailVerification(String email) async {
+    try {
+      await _dio.post(
+        'api/users/request-email-verification/',
+        data: {'email': email},
+      );
+    } on DioException catch (e) {
+      final message =
+          e.response?.data['message'] ??
+          e.message ??
+          'Erro ao solicitar verificação';
+      throw ApiException(message, code: e.response?.statusCode.toString());
+    } catch (e) {
       throw ApiException('Erro inesperado: $e');
     }
   }
@@ -109,7 +130,10 @@ class AuthService {
       print('Código reenviado: ${response.data}');
     } on DioException catch (e) {
       print('Erro ao reenviar: ${e.response?.data}');
-      final message = e.response?.data['message'] ?? e.message ?? 'Falha ao reenviar código';
+      final message =
+          e.response?.data['message'] ??
+          e.message ??
+          'Falha ao reenviar código';
       throw ApiException(message, code: e.response?.statusCode.toString());
     } catch (e) {
       print('Erro geral ao reenviar: $e');

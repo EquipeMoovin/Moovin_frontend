@@ -4,7 +4,9 @@ import 'network/api_client.dart';
 import '../features/auth/data/services/auth_service.dart';
 import '../features/auth/data/repositories/auth_repository.dart';
 import '../features/auth/domain/usecases/login_usecase.dart';
-import '../features/auth/presentation/bloc/auth_bloc.dart';  // Novo import
+import '../features/auth/domain/usecases/verify_email_usecase.dart';
+import '../features/auth/domain/usecases/request_email_usecase.dart';
+import '../features/auth/presentation/bloc/auth_bloc.dart';  
 
 final sl = GetIt.instance;
 
@@ -20,10 +22,13 @@ Future<void> setup() async {
 
   // Domain - UseCase
   sl.registerLazySingleton<LoginUseCase>(() => LoginUseCase(sl<AuthRepository>()));
-
+  sl.registerLazySingleton<VerifyEmailUseCase>(() => VerifyEmailUseCase(sl<AuthRepository>()));
+  sl.registerLazySingleton<RequestEmailVerificationUseCase>(() => RequestEmailVerificationUseCase(sl<AuthRepository>()));
   // Presentation - BLoC (Novo: registre como factory para injeção)
   sl.registerFactory<AuthBloc>(() => AuthBloc(
+    requestEmailVerificationUseCase: sl<RequestEmailVerificationUseCase>(),
+    verifyEmailUseCase: sl<VerifyEmailUseCase>(),
     loginUseCase: sl<LoginUseCase>(),
-    repository: sl<AuthRepository>(),  // Se usar o parâmetro opcional
+    repository: sl<AuthRepository>(),  
   ));
 }
