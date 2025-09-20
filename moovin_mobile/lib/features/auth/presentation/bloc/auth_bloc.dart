@@ -17,7 +17,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<CheckAuthStatus>(_onCheckAuthStatus);
     on<LoginSubmitted>(_onLoginSubmitted);
     on<RegisterSubmitted>(_onRegisterSubmitted);
-    // Adicione outros eventos conforme necessário
   }
 
   Future<void> _onCheckAuthStatus(
@@ -49,6 +48,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthError(e.toString()));
     }
   }
+ 
   Future<void> _onRegisterSubmitted(RegisterSubmitted event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     try {

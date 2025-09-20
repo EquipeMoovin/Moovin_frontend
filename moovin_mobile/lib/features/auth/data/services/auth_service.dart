@@ -14,6 +14,7 @@ class AuthService {
         '/api/users/token',  
         data: {'email': email, 'password': password},
       );
+      // Debugging logs
       print('Resposta da API (JSON): ${response.data}');
       return AuthResponse.fromJson(response.data);
     } on DioException catch (e) {
@@ -39,6 +40,7 @@ class AuthService {
       final originalUserType = userData['user_type'] as String;
       adjustedUserData['user_type'] = userTypeMap[originalUserType] ?? originalUserType;
       
+      // Debugging logs
       print('📤 Enviando dados: $adjustedUserData');
       
       final response = await _dio.post(
@@ -46,10 +48,10 @@ class AuthService {
         data: adjustedUserData,
         options: Options(headers: {'Content-Type': 'application/json'}),
       );
-
-      print('✅ Registro bem-sucedido!');
-      print('✅ Status: ${response.statusCode}');
-      print('✅ Resposta: ${response.data}');
+      // Debugging logs
+      print(' Registro bem-sucedido!');
+      print(' Status: ${response.statusCode}');
+      print('Resposta: ${response.data}');
 
       if (response.statusCode == 201 || response.statusCode == 200) {
         final data = response.data;
@@ -66,7 +68,7 @@ class AuthService {
       }
       
     } on DioException catch (e) {
-      print('❌ Erro Dio: ${e.response?.statusCode} - ${e.response?.data}');
+      print(' Erro Dio: ${e.response?.statusCode} - ${e.response?.data}');
       final message = e.response?.data['error'] ?? 
                      e.response?.data['message'] ?? 
                      e.message ?? 
@@ -74,8 +76,33 @@ class AuthService {
       throw ApiException(message, code: e.response?.statusCode.toString());
     } catch (e) {
       if (e is ApiException) rethrow;
-      print('❌ Erro geral: $e');
+      print(' Erro geral: $e');
       throw ApiException('Erro inesperado: $e');
+    }
+  }
+  
+  //Terminar implementação nas outras camadas...
+  Future<Map<String, dynamic>> requestEmailVerification(String email) async {
+    try {
+      final response = await _dio.post(
+        'api/users/request-email-verification/',
+        data: {'email': email}, 
+        options: Options(headers: {'Content-Type': 'application/json'}),
+      );
+
+      if (response.statusCode == 200) {
+        return Map<String, dynamic>.from(response.data);
+      } else {
+        throw Exception(
+          'Falha ao solicitar verificação de e-mail: ${response.statusCode} - ${response.data}',
+        );
+      }
+    } on DioException catch (e) {
+      throw Exception(
+        'Erro Dio na verificação de e-mail: ${e.response?.statusCode} - ${e.response?.data}',
+      );
+    } catch (e) {
+      throw Exception('Erro inesperado na verificação de e-mail: $e');
     }
   }
 }

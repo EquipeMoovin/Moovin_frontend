@@ -30,6 +30,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.message)),
             );
+            Future.delayed(const Duration(seconds: 2), () {
+              MyApp.router.go('/verify');
+            });
           } else if (state is RegisterError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.message)),

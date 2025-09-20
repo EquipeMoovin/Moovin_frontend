@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'core/injection.dart';
 
+import 'package:moovin_mobile/features/auth/presentation/screens/verify_email_screen.dart';
 import 'features/auth/presentation/screens/login_screen.dart';
 import 'features/auth/presentation/screens/placeholder_screen.dart'; 
 import 'features/auth/presentation/screens/register_screen.dart';
@@ -34,7 +35,15 @@ class MyApp extends StatelessWidget {
           title: 'Dashboard',
         ),
       ),
+      GoRoute(
+        path: '/verify',
+        builder: (context, state) => BlocProvider<AuthBloc>(
+          create: (_) => sl<AuthBloc>(),
+          child: const VerifyEmailScreen(),
+        ),
+      ),
     ],
+
     redirect: (context, state) {
       // Adicione lógica de redirecionamento se necessário
       return null;

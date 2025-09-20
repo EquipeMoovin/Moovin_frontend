@@ -46,4 +46,24 @@ class RegisterError extends AuthState {
   List<Object> get props => [message];
 }
 
+class Verifying extends AuthState {
+  @override
+  List<Object> get props => [];
+}
+class EmailVerified extends AuthState {
+  final String message;
+  const EmailVerified(this.message);
+
+  @override
+  List<Object> get props => [message];
+}
+class EmailVerificationError extends AuthState {
+  final String message;
+  const EmailVerificationError(this.message);
+
+  @override
+  List<Object> get props => [message];
+}
+
+
 class AuthUnauthenticated extends AuthState {}  

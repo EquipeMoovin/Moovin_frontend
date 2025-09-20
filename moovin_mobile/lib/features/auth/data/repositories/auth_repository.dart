@@ -9,6 +9,7 @@ abstract class AuthRepository {
   Future<void> registerUser(Map<String, dynamic> userData);
   Future<User?> getCurrentUser();
   Future<void> logout();
+  Future<void> requestEmailVerification(String email);
 }
 
 class AuthRepositoryImpl implements AuthRepository {
@@ -20,13 +21,24 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<void> registerUser(Map<String, dynamic> userData) async {
     try {
       final response = await _service.registerUser(userData);
-      // Salva mensagem temporária (opcional, para UI)
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('register_message', response['message'] ?? 'Cadastro realizado! Verifique seu email');
     } on ApiException {
       rethrow;
     } catch (e) {
       throw ApiException('Erro no registro: $e');
+    }
+  }
+  @override
+  Future<void> requestEmailVerification(String email) async {
+    try {
+      final response = await _service.requestEmailVerification(email);
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('verification_message', response['message'] ?? 'Verificação enviada!');
+    } on ApiException {
+      rethrow;
+    } catch (e) {
+      throw ApiException('Erro ao solicitar verificação de e-mail: $e');
     }
   }
 

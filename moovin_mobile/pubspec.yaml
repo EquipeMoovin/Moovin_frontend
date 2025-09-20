@@ -2,7 +2,7 @@ name: moovin_mobile
 description: "App com BLoC e Clean Architecture"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -30,31 +30,31 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_bloc: ^8.1.5  # Para BLoC
-  equatable: ^2.0.5     # Comparações de estado
-  get_it: ^7.7.0        # Injeção de dependências
-  dio: ^5.6.0           # HTTP client com interceptors
-  json_annotation: ^4.9.0  # Para serialização JSON
-  shared_preferences: ^2.3.2  # Cache simples (token, etc.)
-  go_router: ^14.3.1    # Navegação com redirects por role
-  hive: ^2.2.3         # Banco de dados local leve
-
+  flutter_bloc: ^8.1.5 # Para BLoC
+  equatable: ^2.0.5 # Comparações de estado
+  get_it: ^7.7.0 # Injeção de dependências
+  dio: ^5.6.0 # HTTP client com interceptors
+  json_annotation: ^4.9.0 # Para serialização JSON
+  shared_preferences: ^2.3.2 # Cache simples (token, etc.)
+  go_router: ^14.3.1 # Navegação com redirects por role
+  hive: ^2.2.3 # Banco de dados local leve
+  flutter_secure_storage: ^9.2.2
   cupertino_icons: ^1.0.8
+  google_fonts: ^6.1.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
-  build_runner: ^2.4.13  # Para gerar código
-  json_serializable: ^6.8.0  # Gera fromJson/toJson
-  mockito: ^5.4.4        # Para testes unitários
-  bloc_test: 9.1.7    # Testes de BLoC
+  build_runner: ^2.4.13 # Para gerar código
+  json_serializable: ^6.8.0 # Gera fromJson/toJson
+  mockito: ^5.4.4 # Para testes unitários
+  bloc_test: 9.1.7 # Testes de BLoC
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
