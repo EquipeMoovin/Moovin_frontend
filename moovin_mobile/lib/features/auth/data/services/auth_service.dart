@@ -44,7 +44,7 @@ class AuthService {
           userTypeMap[originalUserType] ?? originalUserType;
 
       // Debugging logs
-      print('📤 Enviando dados: $adjustedUserData');
+      print(' Enviando dados: $adjustedUserData');
 
       final response = await _dio.post(
         '/api/users/register',
@@ -104,19 +104,29 @@ class AuthService {
     }
   }
 
-  Future<void> requestEmailVerification(String email) async {
+  Future<Map<String, dynamic>> requestEmailVerification(String email) async {
     try {
-      await _dio.post(
-        'api/users/request-email-verification/',
+      print('📤 Solicitando código de verificação para: $email');
+
+      final response = await _dio.post(
+        '/api/users/request-email-verification/',
         data: {'email': email},
       );
+
+      print('✅ Código solicitado com sucesso: ${response.data}');
+      return Map<String, dynamic>.from(response.data);
     } on DioException catch (e) {
+      print(
+        '❌ Erro ao solicitar código: ${e.response?.statusCode} - ${e.response?.data}',
+      );
       final message =
           e.response?.data['message'] ??
+          e.response?.data['error'] ??
           e.message ??
           'Erro ao solicitar verificação';
       throw ApiException(message, code: e.response?.statusCode.toString());
     } catch (e) {
+      print('❌ Erro geral: $e');
       throw ApiException('Erro inesperado: $e');
     }
   }

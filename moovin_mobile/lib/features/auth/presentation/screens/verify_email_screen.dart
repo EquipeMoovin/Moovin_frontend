@@ -7,12 +7,9 @@ import '../bloc/auth_state.dart';
 import '/../app.dart'; // Para MyApp.router
 
 class VerifyEmailScreen extends StatefulWidget {
-  final String email; // recebemos do RegisterScreen
+  final String email;
 
-  const VerifyEmailScreen({
-    super.key,
-    required this.email,
-  });
+  const VerifyEmailScreen({super.key, required this.email});
 
   @override
   State<VerifyEmailScreen> createState() => _VerifyEmailScreenState();
@@ -21,6 +18,18 @@ class VerifyEmailScreen extends StatefulWidget {
 class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
   final _codeController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool _requested = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!_requested && mounted) {
+        context.read<AuthBloc>().add(RequestEmailVerification(widget.email));
+        _requested = true;
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -31,14 +40,22 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Verificação de Email'),
-      ),
+      appBar: AppBar(title: const Text('Verificação de Email')),
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
-          if (state is EmailVerified) {
+          if (state is AuthSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.green,
+              ),
+            );
+          } else if (state is EmailVerified) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.green,
+              ),
             );
             Future.delayed(const Duration(seconds: 2), () {
               if (context.mounted) {
@@ -47,7 +64,17 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
             });
           } else if (state is EmailVerificationError) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.red,
+              ),
+            );
+          } else if (state is AuthError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.red,
+              ),
             );
           }
         },
@@ -62,7 +89,10 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                   children: [
                     const Text(
                       'Insira o código de 6 dígitos recebido no email',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 20),
@@ -85,6 +115,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                       },
                     ),
                     const SizedBox(height: 20),
+                    //Gera erros de load infinito
                     if (state is Verifying)
                       const CircularProgressIndicator()
                     else
@@ -92,11 +123,11 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                         onPressed: () {
                           if (_formKey.currentState?.validate() ?? false) {
                             context.read<AuthBloc>().add(
-                                  VerifyEmailSubmitted(
-                                    widget.email, // usamos o email passado
-                                    _codeController.text.trim(),
-                                  ),
-                                );
+                              VerifyEmailSubmitted(
+                                _codeController.text.trim(), // código primeiro
+                                widget.email, // email em segundo
+                              ),
+                            );
                           }
                         },
                         style: ElevatedButton.styleFrom(

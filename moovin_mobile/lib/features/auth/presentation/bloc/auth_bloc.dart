@@ -22,11 +22,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }) : _loginUseCase = loginUseCase ?? sl<LoginUseCase>(),
        _repository = repository ?? sl<AuthRepository>(),
        _verifyEmailUseCase = verifyEmailUseCase ?? sl<VerifyEmailUseCase>(),
-       _requestEmailVerificationUseCase =requestEmailVerificationUseCase ?? sl<RequestEmailVerificationUseCase>(),
+       _requestEmailVerificationUseCase =
+           requestEmailVerificationUseCase ??
+           sl<RequestEmailVerificationUseCase>(),
        super(AuthInitial()) {
     on<CheckAuthStatus>(_onCheckAuthStatus);
     on<LoginSubmitted>(_onLoginSubmitted);
     on<RegisterSubmitted>(_onRegisterSubmitted);
+    on<RequestEmailVerification>(_onRequestEmailVerification);
     on<ResendVerificationCode>(_onResendVerificationCode);
     on<VerifyEmailSubmitted>(_onVerifyEmailSubmitted);
   }
@@ -99,11 +102,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     RequestEmailVerification event,
     Emitter<AuthState> emit,
   ) async {
+    emit(AuthLoading());
     try {
       await _requestEmailVerificationUseCase(event.email);
-      // pode emitir um estado se quiser feedback
+      print('Código de verificação solicitado para: ${event.email}');
+      emit(
+        const AuthSuccess(
+          'Código de verificação enviado! Verifique seu email.',
+        ),
+      );
     } catch (e) {
-      emit(EmailVerificationError(e.toString()));
+      print('❌ Erro ao solicitar código: $e');
+      emit(AuthError('Erro ao enviar código de verificação: ${e.toString()}'));
     }
   }
 

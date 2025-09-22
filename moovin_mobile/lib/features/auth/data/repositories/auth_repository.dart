@@ -9,7 +9,7 @@ abstract class AuthRepository {
   Future<void> registerUser(Map<String, dynamic> userData);
   Future<User?> getCurrentUser();
   Future<void> logout();
-  Future<void> verifyEmail(String code,String email);
+  Future<void> verifyEmail(String code, String email);
   Future<void> requestEmailVerification(String email);
   Future<void> resendVerificationCode(String email);
 }
@@ -24,7 +24,10 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final response = await _service.registerUser(userData);
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('register_message', response['message'] ?? 'Cadastro realizado! Verifique seu email');
+      await prefs.setString(
+        'register_message',
+        response['message'] ?? 'Cadastro realizado! Verifique seu email',
+      );
     } on ApiException {
       rethrow;
     } catch (e) {
@@ -38,15 +41,15 @@ class AuthRepositoryImpl implements AuthRepository {
       final response = await _service.login(email, password);
       final user = User(
         id: response.id,
-        email: response.email ?? '',  
+        email: response.email ?? '',
         name: response.name ?? '',
         username: response.username ?? '',
         userType: response.userType ?? 'Admin',
-        role: response.userType == 'Proprietario' 
-            ? Role.proprietario 
-            : response.userType == 'Inquilino' 
-                ? Role.inquilino 
-                : Role.admin,
+        role: response.userType == 'Proprietario'
+            ? Role.proprietario
+            : response.userType == 'Inquilino'
+            ? Role.inquilino
+            : Role.admin,
         created: response.created,
         isActive: response.isActive ?? true,
         isStaff: response.isStaff ?? false,
@@ -64,12 +67,11 @@ class AuthRepositoryImpl implements AuthRepository {
       throw ApiException('Erro no repositório: $e');
     }
   }
- 
 
   @override
-  Future<void> verifyEmail(String code,String email) async {
+  Future<void> verifyEmail(String code, String email) async {
     try {
-      await _service.verifyEmail(code,email);
+      await _service.verifyEmail(code, email);
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool('email_verified', true);
     } on ApiException {
@@ -82,7 +84,13 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<void> requestEmailVerification(String email) async {
     try {
-      await _service.requestEmailVerification(email);
+      final response = await _service.requestEmailVerification(email);
+      print('Código de verificação solicitado: $response');
+
+      // Salva informação de que o código foi solicitado
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('verification_email', email);
+      await prefs.setBool('verification_requested', true);
     } on ApiException {
       rethrow;
     } catch (e) {
@@ -100,7 +108,7 @@ class AuthRepositoryImpl implements AuthRepository {
       throw ApiException('Erro ao reenviar código: $e');
     }
   }
- 
+
   @override
   Future<User?> getCurrentUser() async {
     final prefs = await SharedPreferences.getInstance();

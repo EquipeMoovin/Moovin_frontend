@@ -32,9 +32,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ).showSnackBar(SnackBar(content: Text(state.message)));
             Future.delayed(const Duration(seconds: 2), () {
               final email = _emailController.text.trim();
-              // ignore: use_build_context_synchronously
-              MyApp.router.go('/verify/$email');
-              context.read<AuthBloc>().add(RequestEmailVerification(email));
+              MyApp.router.go('/verify/${Uri.encodeComponent(email)}');
             });
           } else if (state is RegisterError) {
             ScaffoldMessenger.of(
