@@ -123,7 +123,7 @@ class AuthService {
       return Map<String, dynamic>.from(response.data);
     } on DioException catch (e) {
       print(
-        '❌ Erro ao solicitar código: ${e.response?.statusCode} - ${e.response?.data}',
+        'Erro ao solicitar código: ${e.response?.statusCode} - ${e.response?.data}',
       );
       final message =
           e.response?.data['message'] ??
@@ -140,7 +140,7 @@ class AuthService {
   Future<void> resendVerificationCode(String email) async {
     try {
       final response = await _dio.post(
-        '/api/auth/resend-code', // Ajuste o endpoint conforme necessário
+        '/api/auth/resend-code', 
         data: {'email': email},
       );
       print('Código reenviado: ${response.data}');
@@ -156,4 +156,22 @@ class AuthService {
       throw ApiException('Erro inesperado: $e');
     }
   }
+
+  Future<void> resetPassword(String email, String newPassword) async {
+    try {
+      final response = await _dio.post(
+        '/api/users/password-reset/',
+        data: {'email': email, 'new_password': newPassword},
+      );
+      print('Senha redefinida com sucesso: ${response.data}');
+    } on DioException catch (e) {
+      print('Erro ao redefinir senha: ${e.response?.data}');
+      throw ApiException('Erro ao redefinir senha: ${e.response?.data}');
+    } catch (e) {
+      print('Erro geral ao redefinir senha: $e');
+      throw ApiException('Erro inesperado: $e');
+    }
+  }
+
+  //Metodos de get e update do user necessarios no futuro.
 }

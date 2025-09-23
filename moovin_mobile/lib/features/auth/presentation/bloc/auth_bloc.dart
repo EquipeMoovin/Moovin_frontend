@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/injection.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
+import '../../domain/usecases/reset_password_usecase.dart';
 import '../../domain/usecases/login_usecase.dart';
 import '../../domain/usecases/request_email_usecase.dart';
 import '../../data/repositories/auth_repository.dart';
@@ -14,22 +15,27 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository _repository;
   final VerifyEmailUseCase _verifyEmailUseCase;
   final RequestEmailVerificationUseCase _requestEmailVerificationUseCase;
+  final ResetPasswordUsecase _resetPasswordUsecase;
   AuthBloc({
     LoginUseCase? loginUseCase,
     AuthRepository? repository,
     VerifyEmailUseCase? verifyEmailUseCase,
     RequestEmailVerificationUseCase? requestEmailVerificationUseCase,
+    ResetPasswordUsecase? resetPasswordUsecase,
   }) : _loginUseCase = loginUseCase ?? sl<LoginUseCase>(),
        _repository = repository ?? sl<AuthRepository>(),
        _verifyEmailUseCase = verifyEmailUseCase ?? sl<VerifyEmailUseCase>(),
        _requestEmailVerificationUseCase =
            requestEmailVerificationUseCase ??
            sl<RequestEmailVerificationUseCase>(),
+       _resetPasswordUsecase =
+           resetPasswordUsecase ?? sl<ResetPasswordUsecase>(),
        super(AuthInitial()) {
     on<CheckAuthStatus>(_onCheckAuthStatus);
     on<LoginSubmitted>(_onLoginSubmitted);
     on<RegisterSubmitted>(_onRegisterSubmitted);
     on<RequestEmailVerification>(_onRequestEmailVerification);
+    on<ResetPasswordSubmitted>(_onResetPasswordSubmitted);
     on<ResendVerificationCode>(_onResendVerificationCode);
     on<VerifyEmailSubmitted>(_onVerifyEmailSubmitted);
   }
@@ -126,6 +132,26 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     } catch (e) {
       print(' Erro ao solicitar código: $e');
       emit(AuthError('Erro ao enviar código de verificação: ${e.toString()}'));
+    }
+  }
+
+  Future<void> _onResetPasswordSubmitted(
+    ResetPasswordSubmitted event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(AuthLoading());
+    try {
+      await _resetPasswordUsecase(event.email, event.newPassword);
+      emit(
+        const AuthSuccess(
+          'Instruções para redefinir a senha foram enviadas para o seu email.',
+        ),
+      );
+    } catch (e) {
+      print('Erro ao solicitar redefinição de senha: $e');
+      emit(
+        AuthError('Erro ao solicitar redefinição de senha: ${e.toString()}'),
+      );
     }
   }
 

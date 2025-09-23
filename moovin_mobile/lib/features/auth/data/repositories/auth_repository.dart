@@ -11,6 +11,7 @@ abstract class AuthRepository {
   Future<void> logout();
   Future<void> verifyEmail(String code, String email);
   Future<void> requestEmailVerification(String email);
+  Future<void> resetPassword(String email, String newPassword);
   Future<void> resendVerificationCode(String email);
 }
 
@@ -122,5 +123,17 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
+  }
+
+  @override
+  Future<void> resetPassword(String email, String newPassword) async {
+    try {
+      await _service.resetPassword(email, newPassword);
+      print('Solicitação de recuperação de senha enviada');
+    } on ApiException {
+      rethrow;
+    } catch (e) {
+      throw ApiException('Erro ao solicitar recuperação de senha: $e');
+    }
   }
 }
