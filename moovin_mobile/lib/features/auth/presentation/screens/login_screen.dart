@@ -31,9 +31,9 @@ class _LoginScreenState extends State<LoginScreen> {
               MyApp.router.go('/dashboard');
             } else if (state is AuthError) {
               if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.message)),
-                );
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text(state.message)));
               }
             }
           },
@@ -68,11 +68,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: () {
                           if (_formKey.currentState?.validate() ?? false) {
                             context.read<AuthBloc>().add(
-                                  LoginSubmitted(
-                                    _emailController.text,
-                                    _passwordController.text,
-                                  ),
-                                );
+                              LoginSubmitted(
+                                _emailController.text,
+                                _passwordController.text,
+                              ),
+                            );
                           }
                         },
                         child: const Text('Entrar'),
@@ -95,6 +95,24 @@ class _LoginScreenState extends State<LoginScreen> {
                             },
                             child: const Text(
                               'Cadastre-se',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF6D472F),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              MyApp.router.go('/forgot-password');
+                            },
+                            child: const Text(
+                              'Esqueceu a senha?',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,

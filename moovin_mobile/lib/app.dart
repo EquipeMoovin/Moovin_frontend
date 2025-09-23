@@ -4,8 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'core/injection.dart';
 
 import 'package:moovin_mobile/features/auth/presentation/screens/verify_email_screen.dart';
+import 'features/auth/presentation/screens/forgot_password_screen.dart';
 import 'features/auth/presentation/screens/login_screen.dart';
-import 'features/auth/presentation/screens/placeholder_screen.dart'; 
+import 'features/auth/presentation/screens/placeholder_screen.dart';
 import 'features/auth/presentation/screens/register_screen.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
 
@@ -31,18 +32,20 @@ class MyApp extends StatelessWidget {
       ),
       GoRoute(
         path: '/dashboard',
-        builder: (context, state) => const PlaceholderScreen(
-          title: 'Dashboard',
-        ),
+        builder: (context, state) =>
+            const PlaceholderScreen(title: 'Dashboard'),
       ),
       GoRoute(
         path: '/verify/:email',
         builder: (context, state) => BlocProvider<AuthBloc>(
           create: (_) => sl<AuthBloc>(),
-          child: VerifyEmailScreen(
-            email: state.pathParameters['email']!,
-          ),
+          child: VerifyEmailScreen(email: state.pathParameters['email']!),
         ),
+      ),
+      GoRoute(
+        path: '/forgot-password',
+        builder: (context, state) =>
+            const ForgotPasswordScreen(title: 'Recuperar Senha'),
       ),
     ],
 

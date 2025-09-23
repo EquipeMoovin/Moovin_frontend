@@ -86,14 +86,26 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     VerifyEmailSubmitted event,
     Emitter<AuthState> emit,
   ) async {
+    print('🔄 Handler _onVerifyEmailSubmitted chamado');
+    print('📧 Email: ${event.email}, Código: ${event.code}');
     emit(const Verifying());
 
     try {
-      await _verifyEmailUseCase(event.code, event.email);
+      print('📤 Chamando _verifyEmailUseCase...');
+      await _verifyEmailUseCase(event.code, event.email).timeout(
+        const Duration(seconds: 30),
+        onTimeout: () {
+          print('⏰ Timeout na verificação de email');
+          throw Exception('Timeout: Verificação demorou mais de 30 segundos');
+        },
+      );
+      print('✅ Verificação bem-sucedida no use case');
       emit(const EmailVerified('Email verificado com sucesso!'));
     } on ApiException catch (e) {
+      print('❌ ApiException na verificação: ${e.message}');
       emit(EmailVerificationError(e.message));
     } catch (e) {
+      print('❌ Erro inesperado na verificação: $e');
       emit(EmailVerificationError('Erro inesperado: $e'));
     }
   }
@@ -112,7 +124,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ),
       );
     } catch (e) {
-      print('❌ Erro ao solicitar código: $e');
+      print(' Erro ao solicitar código: $e');
       emit(AuthError('Erro ao enviar código de verificação: ${e.toString()}'));
     }
   }

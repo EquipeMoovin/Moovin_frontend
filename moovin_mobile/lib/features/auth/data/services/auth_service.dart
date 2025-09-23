@@ -88,18 +88,24 @@ class AuthService {
 
   Future<void> verifyEmail(String code, String email) async {
     try {
+      print('🔍 Verificando email: $email com código: $code');
       final response = await _dio.post(
-        'api/users/verify-email-code/',
+        '/api/users/verify-email-code/',
         data: {'email': email, 'code': code},
       );
-      print('Verificação bem-sucedida: ${response.data}');
+      print('✅ Verificação bem-sucedida: ${response.data}');
     } on DioException catch (e) {
-      print('Erro na verificação: ${e.response?.data}');
+      print(
+        '❌ Erro na verificação: ${e.response?.statusCode} - ${e.response?.data}',
+      );
       final message =
-          e.response?.data['message'] ?? e.message ?? 'Falha na verificação';
+          e.response?.data['message'] ??
+          e.response?.data['error'] ??
+          e.message ??
+          'Falha na verificação';
       throw ApiException(message, code: e.response?.statusCode.toString());
     } catch (e) {
-      print('Erro geral na verificação: $e');
+      print('❌ Erro geral na verificação: $e');
       throw ApiException('Erro inesperado: $e');
     }
   }
