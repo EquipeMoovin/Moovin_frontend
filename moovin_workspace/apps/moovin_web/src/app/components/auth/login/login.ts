@@ -1,33 +1,34 @@
-import { Component } from '@angular/core';
+import { Component,Inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-
+import { Header_example } from '../../header_example/header';
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    RouterModule
+    RouterModule,
+    Header_example,
   ],
   templateUrl: './login.html',
   styleUrls: ['./login.scss']
 })
+
 export class Login {
+  
   messages: { text: string; type: 'error' | 'success' }[] = [];
   loginForm: FormGroup;
-
+  // eslint-disable-next-line @angular-eslint/prefer-inject
   constructor(private fb: FormBuilder) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]]
     });
   }
-
   onSubmit() {
     if (this.loginForm.valid) {
-      // 🚀 Chamar API de autenticação
       this.messages = [
         { text: 'Login realizado com sucesso!', type: 'success' }
       ];
