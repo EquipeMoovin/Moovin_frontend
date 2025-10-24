@@ -12,6 +12,7 @@ AuthResponse _$AuthResponseFromJson(Map<String, dynamic> json) => AuthResponse(
   name: json['name'] as String,
   username: json['username'] as String,
   userType: json['userType'] as String,
+  token: json['token'] as String?,
   created: DateTime.parse(json['created'] as String),
   isActive: json['isActive'] as bool,
   isStaff: json['isStaff'] as bool,
@@ -24,7 +25,8 @@ Map<String, dynamic> _$AuthResponseToJson(AuthResponse instance) =>
       'name': instance.name,
       'username': instance.username,
       'userType': instance.userType,
-      'created': instance.created.toIso8601String(),
+      'token': instance.token,
+      'created': instance.created,
       'isActive': instance.isActive,
       'isStaff': instance.isStaff,
     };
