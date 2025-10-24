@@ -1,8 +1,7 @@
-import { Component,Inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { Header_example } from '../../header_example/header';
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -10,7 +9,6 @@ import { Header_example } from '../../header_example/header';
     CommonModule,
     ReactiveFormsModule,
     RouterModule,
-    Header_example,
   ],
   templateUrl: './login.html',
   styleUrls: ['./login.scss']
