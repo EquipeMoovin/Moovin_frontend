@@ -1,0 +1,73 @@
+<div class="flex justify-center items-center pt-1.5 mt-10">
+  <div class="w-full max-w-1xl rounded-xl p-6 md:p-6 bg-white shadow-lg">
+    
+    <!-- Header com navegação -->
+    <div class="flex items-center justify-between w-full p-4 mb-6">
+      <!-- Botão anterior -->
+      <p-button
+        icon="pi pi-chevron-left"
+        class="p-button-rounded p-button-text"
+        aria-label="Mês anterior"
+        (onClick)="previousMonth()"
+      ></p-button>
+      
+      <!-- Mês e Ano -->
+      <div class="flex flex-col items-center">
+        <span class="text-lg font-semibold text-gray-800">
+          {{ monthName }} {{ year }}
+        </span>
+      </div>
+      
+      <!-- Botão próximo -->
+      <p-button
+        icon="pi pi-chevron-right"
+        class="p-button-rounded p-button-text"
+        aria-label="Próximo mês"
+        (onClick)="nextMonth()"
+      ></p-button>
+    </div>
+
+    <!-- Cabeçalho dos dias da semana -->
+    <div class="grid grid-cols-7 gap-3 mb-4">
+      <div 
+        *ngFor="let dayName of weekDays" 
+        class="text-center text-base font-semibold text-gray-600 py-3"
+      >
+        {{ dayName }}
+      </div>
+    </div>
+
+    <!-- Grade do calendário -->
+    <div class="grid grid-cols-7 gap-3">
+      <ng-container *ngFor="let week of weeks">
+        <div
+          *ngFor="let day of week"
+          [class]="getDayClasses(day)"
+          [style]="getDayStyle(day)"
+          (click)="selectDay(day)"
+          [attr.title]="day.dayData?.status || ''"
+        >
+          {{ day.dayNumber }}
+        </div>
+      </ng-container>
+    </div>
+
+    <!-- Legenda (opcional) -->
+    <div class="mt-6 pt-6 border-t border-gray-200" *ngIf="dayData.length > 0">
+      <div class="text-base text-gray-700 mb-3 font-medium">Legenda:</div>
+      <div class="flex flex-wrap gap-4">
+        <div 
+          *ngFor="let data of getUniqueDayData()" 
+          class="flex items-center gap-2"
+        >
+          <div 
+            class="w-4 h-4 rounded-full" 
+            [style.background-color]="data.color"
+          ></div>
+          <span class="text-sm text-gray-700 font-medium">{{ data.status }}</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
