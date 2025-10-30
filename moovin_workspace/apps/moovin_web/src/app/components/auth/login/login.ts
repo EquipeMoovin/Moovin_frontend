@@ -47,7 +47,7 @@ export class Login {
       },
       error: (err) => {
         this.isLoading = false;
-        console.error('❌ Erro no login:', err);
+        console.error('Erro no login:', err);
 
         const msg =
           err.status === 401
