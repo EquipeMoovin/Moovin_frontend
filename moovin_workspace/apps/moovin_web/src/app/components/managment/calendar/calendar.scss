@@ -1,0 +1,58 @@
+// Estilos do componente Calendar
+.calendar-container {
+    background-color: var(--p-teal-100);
+}
+
+// Estilos para os dias do calendário
+.calendar-day {
+    position: relative;
+    transition: all 0.2s ease-in-out;
+    
+    &:hover {
+        transform: scale(1.05);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+    
+    &.current-month {
+        font-weight: 500;
+    }
+    
+    &.other-month {
+        opacity: 0.4;
+        cursor: default;
+        
+        &:hover {
+            transform: none;
+            box-shadow: none;
+        }
+    }
+    
+    &.today {
+        animation: pulse-ring 2s infinite;
+    }
+    
+    &.selected {
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+}
+
+// Animação para o dia atual
+@keyframes pulse-ring {
+    0% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    }
+    50% {
+        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.3);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+    }
+}
+
+// Responsividade
+@media (max-width: 640px) {
+    .calendar-day {
+        font-size: 0.875rem;
+    }
+}
