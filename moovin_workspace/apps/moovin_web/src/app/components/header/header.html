@@ -1,0 +1,60 @@
+<p-menubar [model]="items">
+    <ng-template #start>
+        <img src="logos/moovin-logo.png" alt="Logo" style="height: 35px; margin-right: 16px;">
+    </ng-template>
+    <ng-template #item let-item let-root="root">
+    <a pRipple class="flex items-center p-menubar-item-link menu-item rounded  hover:bg-[#1E4A28] hover:text-white transition-colors duration-300">
+      <span class="menu-label">{{ item.label }}</span>
+      <p-badge *ngIf="item.badge" [ngClass]="{ 'ml-auto': !root, 'ml-2': root }" [value]="item.badge" />
+      <span *ngIf="item.shortcut" class="ml-auto border border-surface rounded bg-emphasis text-muted-color text-xs p-1">
+        {{ item.shortcut }}
+      </span>
+      <i *ngIf="item.items" [ngClass]="['ml-auto pi', root ? 'pi-angle-down' : 'pi-angle-right']"></i>
+    </a>
+  </ng-template>
+    <ng-template #end>
+        <div class="flex items-center gap-3">
+            
+            <a 
+              routerLink="/perfil"
+              class="
+                cursor-pointer
+                bg-[#2F6D3C]
+                rounded-full
+                p-1.5
+                inline-flex
+                items-center
+                justify-center
+                hover:bg-[#1E4A28]
+                transition
+                duration-300
+              "
+            > 
+              <img 
+                src="" 
+                alt="Foto de perfil"
+                class="w-10 h-10 rounded-full object-cover"
+              />
+            </a>
+
+
+            <a 
+              routerLink="/login"
+              class="
+                cursor-pointer
+                py-2 px-4 
+                bg-[#2F6D3C] 
+                text-white 
+                rounded-lg 
+                font-medium 
+                hover:bg-[#1E4A28] 
+                transition 
+                duration-300
+              "
+            >
+              Sair
+            </a>
+
+        </div>
+    </ng-template>
+</p-menubar>
