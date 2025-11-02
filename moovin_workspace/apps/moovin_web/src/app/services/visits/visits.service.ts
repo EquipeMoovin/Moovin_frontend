@@ -6,7 +6,7 @@ import { Visit, CreateVisitData, ApiResponse  } from '../../interfaces/calendar/
 
 @Injectable({ providedIn: 'root' })
 export class VisitsService {
-    private apiUrl = `${env.apiUrl}/visits/visits`;
+    private apiUrl = `${env.apiUrl}/visits/visits/`;
     private http = inject(HttpClient);
 
     private getAuthToken(): string | null {
