@@ -136,9 +136,10 @@ export class Calendar implements OnInit, OnChanges {
         }
     }
 
-    /**
-     * Avança para o próximo mês
-     */
+    addVisit(): void {
+        this.router.navigate(['/add-visit']);
+        console.log("Redirecionando para adicionar visita")
+    }
     nextMonth(): void {
         if (this.currentMonth === 11) {
             this.currentMonth = 0;

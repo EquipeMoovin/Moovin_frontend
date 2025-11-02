@@ -41,7 +41,6 @@ interface SelectedDayInfo extends DayData {
   `
 })
 export class CalendarExample implements OnInit {
-  
   calendarData: DayData[] = [];
   selectedDayInfo: SelectedDayInfo | null = null;
   currentMonth = new Date().getMonth();

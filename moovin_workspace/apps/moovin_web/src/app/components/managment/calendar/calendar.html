@@ -1,6 +1,15 @@
 <div class="flex justify-center items-center pt-1.5 mt-10">
-  <div class="w-full max-w-1xl rounded-xl p-6 md:p-6 bg-white shadow-lg">
-    
+  
+  <div class="w-full max-w-1xl rounded-xl p-4 mb-6">
+    <div class="flex justify-end">
+      <p-button 
+        icon="pi pi-plus"
+        label="Adicione visitas"
+        (onClick)="addVisit()"
+        styleClass="text-white font-semibold px-4 py-2 rounded-md "
+      />
+    </div>
+
     <!-- Header com navegação -->
     <div class="flex items-center justify-between w-full p-4 mb-6">
       <!-- Botão anterior -->
