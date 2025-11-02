@@ -14,7 +14,7 @@ export interface CreateVisitData {
     name: string;                 
     date: string;                 
     time: string;                
-    immobile: string;          
+    immobile: number;          
     status?: 'agendada' | 'em_andamento' | 'concluida' | 'cancelada';
     notes?: string;
 }
