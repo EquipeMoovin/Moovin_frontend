@@ -1,0 +1,92 @@
+<app-header></app-header>
+
+<div class="flex items-center justify-center p-6">
+  <div class="w-full max-w bg-white rounded-xl shadow-lg p-6">
+    <h2 class="text-lg font-semibold mb-4">Registrar Visita</h2>
+
+    <form [formGroup]="visitForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+      <!-- Visitor Name -->
+      <div class="flex flex-col gap-1">
+        <label for="visitorName" class="text-sm font-medium text-gray-700">Nome do visitante *</label>
+            <input type="text" pInputText id="visitorName" formControlName="visitorName" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" />
+            @if (visitForm.get('visitorName')?.errors && (visitForm.get('visitorName')?.touched || visitForm.get('visitorName')?.dirty)) {
+                <p-message
+                    *ngIf="isInvalid('visitorName')"
+                    severity="error"
+                    text="Nome do visitante é obrigatório."
+                    size="small"
+                    styleClass="mt-1"
+                ></p-message>
+            }
+      </div>
+
+      <!-- Imóvel -->
+      <div class="flex flex-col gap-1">
+        <label for="immobile" class="text-sm font-medium text-gray-700">Imóvel *</label>
+            <p-autoComplete
+            inputId="immobile"
+            formControlName="immobile"
+            [suggestions]="filteredImmobiles"
+            field="label"
+            (completeMethod)="searchImmobile($event)"
+            [minLength]="1"
+            [delay]="300"
+            [dropdown]="true"
+            [forceSelection]="false"
+            [inputStyleClass]="'w-full'"
+            class="w-full"
+            ></p-autoComplete>
+
+            <p-message
+            *ngIf="isInvalid('immobile')"
+            severity="error"
+            text="Imóvel é obrigatório."
+            size="small"
+            styleClass="mt-1"
+            ></p-message>
+      </div>
+
+      <!-- Data de visita -->
+      <div class="flex flex-col gap-1">
+        <label for="visitDate" class="text-sm font-medium text-gray-700">Data da visita *</label>
+            <input type="date" pInputText id="visitDate" formControlName="visitDate" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" />
+            <p-message
+                *ngIf="isInvalid('visitDate')"
+                severity="error"
+                text="Data da visita é obrigatória."
+                size="small"
+                styleClass="mt-1"
+            ></p-message>
+      </div>
+
+      <!-- Hora da visita -->
+      <div class="flex flex-col gap-1">
+        <label for="visitTime" class="text-sm font-medium text-gray-700">Hora da visita *</label>
+            <input type="time" pInputText id="visitTime" formControlName="visitTime" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" />
+            <p-message
+                *ngIf="isInvalid('visitTime')"
+                severity="error"
+                text="Hora da visita é obrigatória."
+                size="small"
+                styleClass="mt-1"
+            ></p-message>
+      </div>
+
+      <!-- Notas -->
+      <div class="flex flex-col gap-1">
+        <label for="notes" class="text-sm font-medium text-gray-700">Notas</label>
+            <textarea pInputTextarea id="notes" formControlName="notes" rows="3" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"></textarea>
+      </div>
+      <!-- Submit -->
+      <div class="flex justify-end">
+        <button
+          pButton
+          type="submit"
+          label="Enviar"
+          [disabled]="isLoading"
+          class="px-6 py-2 rounded-md"
+        ></button>
+      </div>
+    </form>
+  </div>
+</div>
